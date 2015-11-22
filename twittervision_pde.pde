@@ -1,4 +1,5 @@
 ArrayList<Node> nodeList = new ArrayList<Node>();
+Map<String,String> hashtags;
 String[] keywords;
 boolean animating = false;
 boolean panimation = false;
@@ -18,9 +19,12 @@ import java.util.*;
 void setup()
 {
   size(800, 800);
+  TweetCrawler tc = new TweetCrawler();
+  hashtags = tc.search("#yolo");
   keywords= loadStrings("dictionary.txt");
   recreateNode();
   repopulate(keywords, 125);
+  
 }
 
 void draw()
@@ -192,18 +196,17 @@ void mouseClicked()
 
 void recreateNode()
 {
-  println("sldkjf");
   for (int i = 0; i<15; i++)
   {
     Node n1 = new Node();
     nodeList.add(n1);
   }
-  for (Node a : nodeList)
+  for (Node a:nodeList)
   {
     a.setText(keywords[(int)random(keywords.length)]);
-    a.setR((int)(random(255)+(255*2))/3);
-    a.setG((int)(random(255)+(255*2))/3);
-    a.setB((int)(random(255)+(255*2))/3);
+    //a.setR((int)(random(255)+(255*2))/3);
+    //a.setG((int)(random(255)+(255*2))/3);
+    //a.setB((int)(random(255)+(255*2))/3);
   }
 }
 
