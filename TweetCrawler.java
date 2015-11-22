@@ -1,11 +1,18 @@
 import java.util.*;
 import twitter4j.*;
+import twitter4j.conf.ConfigurationBuilder;
 
 public class TweetCrawler {
 	private Twitter twitter;
 	
 	public TweetCrawler() {
-		twitter = TwitterFactory.getSingleton();
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setDebugEnabled(true)
+		  .setOAuthConsumerKey("aUmPzeBchceTVb9Q5dXdA0Yjv")
+		  .setOAuthConsumerSecret("4eLHsF4VXg8YxTbPJdnRR3guo9cfMccLfUwfUxGZ6uIi5kYPdu")
+		  .setOAuthAccessToken("2883398341-ZgHWf4W2IncWsOu7oQEC2R0FvOmhxqeMZBJFoXC")
+		  .setOAuthAccessTokenSecret("PHoAVJD7W0C3p3uYf4U3rmf7Zp4bRu8Ip1VryhzSYsE6d");
+		twitter = new TwitterFactory(cb.build()).getInstance();
 	}
 	
 	public Map<String,String> search(String hashtag) {
