@@ -12,12 +12,14 @@ int backB;
 float springAmount;
 boolean springAnimation;
 Node nodeClicked;
+LeapController leap;
 
 import java.io.*;
 import java.util.*;
 
 void setup()
 {
+  leap = new LeapController();
   size(800, 800);
   TweetCrawler tc = new TweetCrawler();
   hashtags = tc.search("#yolo");
@@ -33,6 +35,10 @@ void setup()
 
 void draw()
 {
+  pushStyle();
+  fill(255,0,0);
+  ellipse(leap.getX(),leap.getY(),5,5);
+  popStyle();
   if (animating)
   {
     if (frame < 30)
@@ -129,7 +135,7 @@ class Node
     textB = b/2;
     fill(textR, textG, textB);
     if(keyword.length() > 0)
-      text(keyword, xLoc, yLoc);
+      text(keyword.replace("\n"," "), xLoc, yLoc);
   }
 
   float getX()
