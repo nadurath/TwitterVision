@@ -17,20 +17,21 @@ float springAmount;
 boolean springAnimation, closed;
 Node nodeClicked;
 LeapController leap;
-
+Tweet TOne, TTwo, TThree;
+ArrayList<Integer> woeids = new ArrayList<Integer>();
 import java.io.*;
 import java.util.*;
 
+
 void setup()
 {
+  woeids.add(23424977); //USA
+  woeids.add(2490383); //Seattle, works
+  woeids.add(2487956); //San Francisco, works
   closed = false;
   leap = new LeapController();
-  size(1000,900);
+  size(1000, 900);
   tc = new TweetCrawler();
-  trends = tc.getTrends();
-  for (int i = 0; i < trends.getTrends().length; i++) {
-    keywords.add(trends.getTrends()[i].getName());
-  }
   println(keywords);
   recreateNode();
   repopulate(keywords, 125);
@@ -41,23 +42,22 @@ void draw()
   for (int i = 0; i < trends.getTrends().length; i++) {
     keywords.add(trends.getTrends()[i].getName());
   }
-  if(leap.getDistance()<50&&!closed){
-   println("closed");
-   closed = true;
-   }
-   else if(leap.getDistance()>50&&closed)
-   {
-   println("opened");
-   closed = false;
-   click((int)map(leap.getX(),-120,62,0,width),(int)map(leap.getY(),75,250,height,0));
-   }
+  if (leap.getDistance()<50&&!closed) {
+    println("closed");
+    closed = true;
+  } else if (leap.getDistance()>50&&closed)
+  {
+    println("opened");
+    closed = false;
+    click((int)map(leap.getX(), -120, 62, 0, width), (int)map(leap.getY(), 75, 250, height, 0));
+  }
   if (animating)
   {
     if (frame < 30)
     {
       fill(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
       //println(frame);
-      ellipse(nodeClicked.getX(), nodeClicked.getY(), 100*frame/30*20, 100*frame/30*20);//change 40 if it grows too fast
+      ellipse(nodeClicked.getX(), nodeClicked.getY(), 100*frame/30*22, 100*frame/30*22);
       fill(0);
 
       frame++;
@@ -90,11 +90,23 @@ void draw()
     repopulate(keywords, 125);
   pushStyle();
   stroke(255, 0, 0);
-  ellipse(map(leap.getX(),-120,62,0,width),map(leap.getY(),75,250,height,0),5,5); 
+  ellipse(map(leap.getX(), -120, 62, 0, width), map(leap.getY(), 75, 250, height, 0), 5, 5); 
   popStyle();
 }
 
-
+class Tweet {
+  String user, body;
+  PImage avi;
+  Tweet(String s, String b, PImage p) {
+    user = s;
+    body = b;
+    avi = p;
+    avi.resize(50, 50);
+  }
+  PImage getAvi() {
+    return avi;
+  }
+}
 class Node
 {
   String keyword;
@@ -153,7 +165,7 @@ class Node
     textB = b/2;
     fill(textR, textG, textB);
     if (keyword.length() > 0)
-      text(keyword.replace("\n", " "), xLoc-70, yLoc-40,130,150);
+      text(keyword.replace("\n", " "), xLoc-70, yLoc-40, 130, 150);
   }
 
   float getX()
@@ -230,23 +242,35 @@ void click(int x, int y) {
 
 
 void recreateNode()
-{
+{ 
+  trends = tc.getTrends(woeids.get((int)random(woeids.size())));
+  keywords = new ArrayList<String>();
+  if (trends.getTrends().length!=0)
+  {
+    for (int i = 0; i < trends.getTrends().length; i++) {
+      keywords.add(trends.getTrends()[i].getName());
+    }
+  }
+  else
+    for(int i = 0;i<10;i++)
+      keywords.add("Twitter doesn't like us:(");
   for (int i = 0; i<10; i++)
   {
     Node n1 = new Node();
     nodeList.add(n1);
   }
   rayCount = 0;
-  for (Node a : nodeList)
+  for (int i = 0; i<10; i++)
   {
-    a.setText(keywords.get(rayCount));
-    //a.setR((int)(random(255)+(255*2))/3);
-    //a.setG((int)(random(255)+(255*2))/3);
-    //a.setB((int)(random(255)+(255*2))/3);
-    rayCount++;
+    nodeList.get(i).setText(keywords.get(i));
   }
-  if(nodeClicked!=null)
-  tweets = tc.search(nodeClicked.getText());
+  if (nodeClicked!=null)
+  {
+    tweets = tc.search(nodeClicked.getText());
+    TOne = new Tweet((String)tweets.keySet().toArray()[0], tweets.get((String)tweets.keySet().toArray()[0]), loadImage(tc.getPic((String)tweets.keySet().toArray()[0])));
+    TTwo = new Tweet((String)tweets.keySet().toArray()[1], tweets.get((String)tweets.keySet().toArray()[1]), loadImage(tc.getPic((String)tweets.keySet().toArray()[1])));
+    TThree = new Tweet((String)tweets.keySet().toArray()[2], tweets.get((String)tweets.keySet().toArray()[2]), loadImage(tc.getPic((String)tweets.keySet().toArray()[2])));
+  }
   rayCount = 0;
 }
 
@@ -261,17 +285,17 @@ void repopulate(ArrayList<String> related, int sz)
   {
     background(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
     fill(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
-    ellipse(width/2,height/2,600,600);
+    ellipse(width/2, height/2, 600, 600);
     fill(0);
     String rel = nodeClicked.getText();
+    text(rel, width/2, height/2-200);
     textAlign(LEFT);
-    text(rel,width/2,height/2-200);
     String user = (String)tweets.keySet().toArray()[0];
-    showTweet(width/2+20,height/2-140,user,tweets.get(user));
+    showTweet(width/2+20, height/2-140, user, tweets.get(user), TOne.getAvi());
     user = (String)tweets.keySet().toArray()[1];
-    showTweet(width/2+20,height/2,user,tweets.get(user));
+    showTweet(width/2+20, height/2, user, tweets.get(user), TTwo.getAvi());
     user = (String)tweets.keySet().toArray()[2];
-    showTweet(width/2+20,height/2+120,user,tweets.get(user));
+    showTweet(width/2+20, height/2+120, user, tweets.get(user), TThree.getAvi());
   }
   pushMatrix();
   translate(width/2, height/2);
@@ -284,13 +308,14 @@ void repopulate(ArrayList<String> related, int sz)
   }
   popMatrix();
 }
-void showTweet(int x, int y,String user,String body){
+void showTweet(int x, int y, String user, String body, PImage avi) {
   pushStyle();
-  fill(255,0,0);
-  text(user,x-150,y);
+  fill(255, 0, 0);
+  text(user, x-200, y);
   fill(0);
   textSize(12);
-  text(body.replace("\n"," "),x-180,y+10,300,300);
+  text(body.replace("\n", " "), x-140, y+10, 300, 300);
+  image(avi, x-200, y+10);
   popStyle();
 }
 void keyReleased()

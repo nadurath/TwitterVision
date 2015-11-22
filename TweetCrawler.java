@@ -47,10 +47,10 @@ public class TweetCrawler {
     }
     return " ";
   }
-  public Trends getTrends()
+  public Trends getTrends(int WoE)
   {
     try {
-      return twitter.getPlaceTrends(23424977);
+      return twitter.getPlaceTrends(WoE);
     }
     catch(TwitterException te) {
       te.printStackTrace();
