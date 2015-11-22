@@ -10,7 +10,7 @@ int backR;
 int backG;
 int backB;
 float springAmount;
-boolean springAnimation;
+boolean springAnimation,closed;
 Node nodeClicked;
 LeapController leap;
 
@@ -19,10 +19,11 @@ import java.util.*;
 
 void setup()
 {
+  closed = false;
   leap = new LeapController();
   size(800, 800);
   TweetCrawler tc = new TweetCrawler();
-  hashtags = tc.search("#yolo");
+  hashtags = tc.search("#nice");
   Collection<String> values = hashtags.values();
   Object[] tweetVals = values.toArray();
   for(Object o: tweetVals)
@@ -35,10 +36,17 @@ void setup()
 
 void draw()
 {
-  pushStyle();
-  fill(255,0,0);
-  ellipse(leap.getX(),leap.getY(),5,5);
-  popStyle();
+  //println(leap.getDistance());
+  if(leap.getDistance()<50&&!closed){
+   println("closed");
+    closed = true;
+  }
+  else if(leap.getDistance()>50&&closed)
+   {
+     println("opened");
+    closed = false;
+    click((int)map(leap.getX(),-120,62,0,width),(int)map(leap.getY(),75,250,height,0));
+   }
   if (animating)
   {
     if (frame < 30)
@@ -74,6 +82,10 @@ void draw()
     }
   } else
     repopulate(keywords, 125);
+    pushStyle();
+    stroke(255,0,0);
+  ellipse(map(leap.getX(),-120,62,0,width),map(leap.getY(),75,250,height,0),5,5);
+  popStyle();
 }
 
 
@@ -183,13 +195,18 @@ class Node
 
 void mouseClicked()
 {
+  click(mouseX,mouseY);
+}
+
+void click(int x, int y){
   if (!animating)
   {
     for (Node a : nodeList)
     {
       //println(a.getText() + "," + a.getX() + "," + a.getY());
-      if (dist(mouseX, mouseY, a.getX(), a.getY()) < 75)
+      if (dist(x, y, a.getX(), a.getY()) < 75)
       {
+        println("click recieved");
         panimation = true;
         zoomX = a.getX();
         zoomY = a.getY();
@@ -204,6 +221,8 @@ void mouseClicked()
     }
   }
 }
+
+
 
 void recreateNode()
 {
