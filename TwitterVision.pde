@@ -19,6 +19,7 @@ Node nodeClicked;
 LeapController leap;
 Tweet TOne, TTwo, TThree;
 ArrayList<Integer> woeids = new ArrayList<Integer>();
+String title;
 import java.io.*;
 import java.util.*;
 
@@ -29,12 +30,13 @@ void setup()
   woeids.add(2490383); //Seattle, works
   woeids.add(2487956); //San Francisco, works
   closed = false;
-  //leap = new LeapController();
+  leap = new LeapController();
   size(1000, 900);
   tc = new TweetCrawler();
   println(keywords);
   recreateNode();
   repopulate(keywords, 125);
+  title = "";
 }
 
 void draw()
@@ -45,7 +47,7 @@ void draw()
       keywords.add(trends.getTrends()[i].getName());
     }
   }
-  /*if (leap.getDistance()<50&&!closed) {
+  if (leap.getDistance()<50&&!closed) {
    println("closed");
    closed = true;
    } else if (leap.getDistance()>50&&closed)
@@ -53,7 +55,7 @@ void draw()
    println("opened");
    closed = false;
    click((int)map(leap.getX(), -120, 62, 0, width), (int)map(leap.getY(), 75, 250, height, 0));
-   }*/
+   }
   if (animating)
   {
     if (frame < 30)
@@ -64,8 +66,8 @@ void draw()
       fill(0);
 
       frame++;
-      if (frame > 30)
-        repopulate(keywords, 325);
+      //if (frame > 30)
+      //  repopulate(keywords, 325);
     } else
     {
       animating = false;
@@ -81,9 +83,7 @@ void draw()
       springAnimation = false;
     } else {
       background(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
-      repopulate(keywords, (int)(125-125*(40-frame)/40*cos((frame/40*PI*4)%(2*PI))));
-      //rect(width/2, height/2, 40-40*(40-frame)/40*cos((frame/40*PI*4)%(2*PI)), 40-40*(40-frame)/40*cos((frame/40*PI*4)%(2*PI)));
-      //textSize(48*frame/40+1);
+      repopulate(keywords, (int)(125-125*(40-frame)/40*cos((frame/40*PI*6)%(2*PI))));
       animating = false;
       //nodeList = new ArrayList<Node>();
       frame++;
@@ -93,7 +93,7 @@ void draw()
     repopulate(keywords, 125);
   pushStyle();
   stroke(255, 0, 0);
-  //ellipse(map(leap.getX(), -120, 62, 0, width), map(leap.getY(), 75, 250, height, 0), 5, 5); 
+  ellipse(map(leap.getX(), -120, 62, 0, width), map(leap.getY(), 75, 250, height, 0), 5, 5); 
   popStyle();
 }
 
@@ -231,6 +231,7 @@ void click(int x, int y) {
         zoomX = a.getX();
         zoomY = a.getY();
         println(a.getText());
+        title = a.getText();
         backR = a.getR();
         backG = a.getG();
         backB = a.getB();
@@ -262,7 +263,7 @@ void recreateNode()
     }
   } else
     for (int i = 0; i<10; i++)
-      keywords.add((int)random(i)+" ");
+      keywords.add("Error: Rate limit exceeded");
   for (int i = 0; i<10; i++)
   {
     Node n1 = new Node();
@@ -279,8 +280,6 @@ void recreateNode()
 
 void repopulate(ArrayList<String> related, int sz)
 {
-  if (springAnimation)
-    println(sz);
   animating = false;
   if (nodeClicked == null)
     background(255);
@@ -288,17 +287,16 @@ void repopulate(ArrayList<String> related, int sz)
   {
     background(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
     fill(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
-    ellipse(width/2, height/2, 600, 600);
+    ellipse(width/2, height/2, 650*sz/125, 650*sz/125);
     fill(0);
-    String rel = nodeClicked.getText();
-    text(rel, width/2, height/2-200);
+    text(title, width/2, height/2-200);
     textAlign(LEFT);
     String user = (String)tweets.keySet().toArray()[0];
-    showTweet(width/2+20, height/2-140, user, tweets.get(user), TOne.getAvi());
+    showTweet(width/2+20, height/2-140, TOne.user, TOne.body, TOne.getAvi());
     user = (String)tweets.keySet().toArray()[1];
-    showTweet(width/2+20, height/2, user, tweets.get(user), TTwo.getAvi());
+    showTweet(width/2+20, height/2, TTwo.user, TTwo.body, TTwo.getAvi());
     user = (String)tweets.keySet().toArray()[2];
-    showTweet(width/2+20, height/2+120, user, tweets.get(user), TThree.getAvi());
+    showTweet(width/2+20, height/2+120, TThree.user, TThree.body, TThree.getAvi());
   }
   pushMatrix();
   translate(width/2, height/2);
