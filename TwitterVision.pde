@@ -1,5 +1,6 @@
 ArrayList<Node> nodeList = new ArrayList<Node>();
 Map<String, String> hashtags;
+Map<String, String> tweets;
 ArrayList<String> keywords = new ArrayList<String>();
 boolean animating = false;
 boolean panimation = false;
@@ -26,10 +27,6 @@ void setup()
   //leap = new LeapController(); ##############################
   size(1000,900);
   tc = new TweetCrawler();
-  hashtags = tc.search("#nice");
-  hashtags = tc.search("#whoosh");
-  Collection<String> values = hashtags.values();
-  Object[] tweetVals = values.toArray();
   trends = tc.getTrends();
   for (int i = 0; i < trends.getTrends().length; i++) {
     keywords.add(trends.getTrends()[i].getName());
@@ -82,14 +79,12 @@ void draw()
     } else {
       background(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
       repopulate(keywords, (int)(125-125*(40-frame)/40*cos((frame/40*PI*4)%(2*PI))));
-      println("Something");
       //rect(width/2, height/2, 40-40*(40-frame)/40*cos((frame/40*PI*4)%(2*PI)), 40-40*(40-frame)/40*cos((frame/40*PI*4)%(2*PI)));
       //textSize(48*frame/40+1);
       animating = false;
       //nodeList = new ArrayList<Node>();
       frame++;
       fill(0);
-      text(nodeClicked.getText(), width/2, height/2);
     }
   } else
     repopulate(keywords, 125);
@@ -241,7 +236,6 @@ void recreateNode()
     Node n1 = new Node();
     nodeList.add(n1);
   }
-
   rayCount = 0;
   for (Node a : nodeList)
   {
@@ -251,6 +245,8 @@ void recreateNode()
     //a.setB((int)(random(255)+(255*2))/3);
     rayCount++;
   }
+  if(nodeClicked!=null)
+  tweets = tc.search(nodeClicked.getText());
   rayCount = 0;
 }
 
@@ -266,8 +262,11 @@ void repopulate(ArrayList<String> related, int sz)
     background(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
     fill(0);
     String rel = nodeClicked.getText();
-    //hashtags = tc.search(rel);
-    text(rel,width/2,height/2);
+    text(rel,width/2,height/2-20);
+    String user = (String)tweets.keySet().toArray()[0];
+    showTweet(width/2-20,height/2,user,tweets.get(user));
+    user = (String)tweets.keySet().toArray()[2];
+    showTweet(width/2-20,height/2+40,user,tweets.get(user));
   }
   pushMatrix();
   translate(width/2, height/2);
@@ -280,7 +279,12 @@ void repopulate(ArrayList<String> related, int sz)
   }
   popMatrix();
 }
-
+void showTweet(int x, int y,String user,String body){
+  pushStyle();
+  text(user,x,y);
+  text(body,x,y+30);
+  popStyle();
+}
 void keyReleased()
 {
   if (key == DELETE)
