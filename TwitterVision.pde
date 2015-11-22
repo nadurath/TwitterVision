@@ -19,15 +19,17 @@ import java.util.*;
 
 void setup()
 {
-  leap = new LeapController();
+  //leap = new LeapController();
   size(800, 800);
   TweetCrawler tc = new TweetCrawler();
-  hashtags = tc.search("#yolo");
+  hashtags = tc.search("#whoosh");
   Collection<String> values = hashtags.values();
   Object[] tweetVals = values.toArray();
-  for(Object o: tweetVals)
-    keywords.add((String)o);
-  println(values);
+  Trends trends = tc.getTrends();
+  for (int i = 0; i < trends.getTrends().length; i++) {
+    keywords.add(trends.getTrends()[i].getName());
+  }
+  println(keywords);
   recreateNode();
   repopulate(keywords, 125);
   
@@ -37,7 +39,7 @@ void draw()
 {
   pushStyle();
   fill(255,0,0);
-  ellipse(leap.getX(),leap.getY(),5,5);
+  //ellipse(leap.getX(),leap.getY(),5,5);
   popStyle();
   if (animating)
   {
@@ -207,14 +209,15 @@ void mouseClicked()
 
 void recreateNode()
 {
-  for (int i = 0; i<15; i++)
+  for (int i = 0; i<10; i++)
   {
     Node n1 = new Node();
     nodeList.add(n1);
   }
+  
   for (Node a:nodeList)
   {
-    a.setText(keywords.get((int)random(keywords.size())));
+    a.setText(keywords.remove(0));
     //a.setR((int)(random(255)+(255*2))/3);
     //a.setG((int)(random(255)+(255*2))/3);
     //a.setB((int)(random(255)+(255*2))/3);
@@ -232,10 +235,10 @@ void repopulate(ArrayList<String> related, int sz)
     background(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
   pushMatrix();
   translate(width/2, height/2);
-  for (int i=0; i<15; i++)
+  for (int i=0; i<10; i++)
   {
-    float posx=325*sin(TWO_PI/15.0*i);
-    float posy=325*cos(TWO_PI/15.0*i);
+    float posx=325*sin(TWO_PI/10.0*i);
+    float posy=325*cos(TWO_PI/10.0*i);
     //draw object number i
     nodeList.get(i).drawNode(posx, posy,sz);
   }
