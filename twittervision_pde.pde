@@ -27,13 +27,13 @@ void draw()
 {
   if (animating)
   {
-    if (frame < 40)
+    if (frame < 30)
     {
       fill(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
       //println(frame);
-      ellipse(nodeClicked.getX(), nodeClicked.getY(), 100*frame/40*20, 100*frame/40*20);//change 40 if it grows too fast
+      ellipse(nodeClicked.getX(), nodeClicked.getY(), 100*frame/30*20, 100*frame/30*20);//change 40 if it grows too fast
       frame++;
-      if (frame > 40)
+      if (frame > 30)
         repopulate(keywords, 325);
     } else
     {
@@ -233,6 +233,6 @@ void keyReleased()
   if (key == DELETE)
   {
     recreateNode();
-    repopulate(keywords, 325);
+    repopulate(keywords, 125);
   }
 }
