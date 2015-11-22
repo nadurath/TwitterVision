@@ -12,6 +12,7 @@ int backG;
 int backB;
 int rayCount;
 Trends trends;
+ResponseList<Location> avail;
 TweetCrawler tc;
 float springAmount;
 boolean springAnimation, closed;
@@ -26,13 +27,22 @@ import java.util.*;
 
 void setup()
 {
+  tc = new TweetCrawler();
+  avail = tc.getAvailable();
+  for(Location l : avail)
+  {
+    String temp = l.getName();
+    if(temp.equals("Boston") || temp.equals("Colorado Springs") || temp.equals("Denver") || temp.equals("Houston") || temp.equals("New York") || temp.equals("Phoenix") || temp.equals("San Francisco") || temp.equals("Washington") || temp.equals("Nashville"))
+    {
+      woeids.add(l.getWoeid());
+    }
+  }
   woeids.add(23424977); //USA
   woeids.add(2490383); //Seattle, works
-  woeids.add(2487956); //San Francisco, works
   closed = false;
   leap = new LeapController();
   size(1000, 900);
-  tc = new TweetCrawler();
+  println(woeids);
   println(keywords);
   recreateNode();
   repopulate(keywords, 125);

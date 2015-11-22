@@ -58,4 +58,16 @@ public class TweetCrawler {
     }
     return null;
   }
+  
+  public ResponseList<Location> getAvailable()
+  {
+    try{
+      return twitter.getAvailableTrends();
+    }
+    catch(TwitterException te) {
+      te.printStackTrace();
+      System.out.println("Failed to find available trends: " + te.getMessage());
+    }
+    return null;
+  }
 }
