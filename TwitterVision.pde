@@ -1,5 +1,5 @@
 ArrayList<Node> nodeList = new ArrayList<Node>();
-Map<String,String> hashtags;
+Map<String, String> hashtags;
 ArrayList<String> keywords = new ArrayList<String>();
 boolean animating = false;
 boolean panimation = false;
@@ -9,8 +9,10 @@ float frame;
 int backR;
 int backG;
 int backB;
+int rayCount;
+Trends trends;
 float springAmount;
-boolean springAnimation,closed;
+boolean springAnimation, closed;
 Node nodeClicked;
 LeapController leap;
 
@@ -20,38 +22,40 @@ import java.util.*;
 void setup()
 {
   closed = false;
-  leap = new LeapController();
+  //leap = new LeapController(); ##############################
   size(800, 800);
   TweetCrawler tc = new TweetCrawler();
   hashtags = tc.search("#nice");
-  leap = new LeapController();
+  //leap = new LeapController(); ############################
   size(800, 800);
   hashtags = tc.search("#whoosh");
   Collection<String> values = hashtags.values();
   Object[] tweetVals = values.toArray();
-  Trends trends = tc.getTrends();
+  trends = tc.getTrends();
   for (int i = 0; i < trends.getTrends().length; i++) {
     keywords.add(trends.getTrends()[i].getName());
   }
   println(keywords);
   recreateNode();
   repopulate(keywords, 125);
-  
 }
 
 void draw()
 {
-  if(leap.getDistance()<50&&!closed){
-   println("closed");
-    closed = true;
+  for (int i = 0; i < trends.getTrends().length; i++) {
+    keywords.add(trends.getTrends()[i].getName());
   }
-  else if(leap.getDistance()>50&&closed)
-   {
-     println("opened");
-    closed = false;
-    click((int)map(leap.getX(),-120,62,0,width),(int)map(leap.getY(),75,250,height,0));
+  /*if(leap.getDistance()<50&&!closed){ ################################
+   println("closed");
+   closed = true;
    }
- if (animating)
+   else if(leap.getDistance()>50&&closed)
+   {
+   println("opened");
+   closed = false;
+   click((int)map(leap.getX(),-120,62,0,width),(int)map(leap.getY(),75,250,height,0));
+   }*/
+  if (animating)
   {
     if (frame < 30)
     {
@@ -86,9 +90,9 @@ void draw()
     }
   } else
     repopulate(keywords, 125);
-    pushStyle();
-    stroke(255,0,0);
-  ellipse(map(leap.getX(),-120,62,0,width),map(leap.getY(),75,250,height,0),5,5);
+  pushStyle();
+  stroke(255, 0, 0);
+  //ellipse(map(leap.getX(),-120,62,0,width),map(leap.getY(),75,250,height,0),5,5); ###########################
   popStyle();
 }
 
@@ -135,7 +139,7 @@ class Node
   {
     keyword = s;
   }
-  void drawNode(float x, float y,int sz)
+  void drawNode(float x, float y, int sz)
   {
 
     xLoc = x;
@@ -150,8 +154,8 @@ class Node
     textG = g/2;
     textB = b/2;
     fill(textR, textG, textB);
-    if(keyword.length() > 0)
-      text(keyword.replace("\n"," "), xLoc, yLoc);
+    if (keyword.length() > 0)
+      text(keyword.replace("\n", " "), xLoc, yLoc);
   }
 
   float getX()
@@ -193,16 +197,15 @@ class Node
   {
     b = bl;
   }
-  
 }
 
 
 void mouseClicked()
 {
-  click(mouseX,mouseY);
+  click(mouseX, mouseY);
 }
 
-void click(int x, int y){
+void click(int x, int y) {
   if (!animating)
   {
     for (Node a : nodeList)
@@ -235,14 +238,17 @@ void recreateNode()
     Node n1 = new Node();
     nodeList.add(n1);
   }
-  
-  for (Node a:nodeList)
+
+  rayCount = 0;
+  for (Node a : nodeList)
   {
-    a.setText(keywords.remove(0));
+    a.setText(keywords.get(rayCount));
     //a.setR((int)(random(255)+(255*2))/3);
     //a.setG((int)(random(255)+(255*2))/3);
     //a.setB((int)(random(255)+(255*2))/3);
+    rayCount++;
   }
+  rayCount = 0;
 }
 
 void repopulate(ArrayList<String> related, int sz)
@@ -251,7 +257,7 @@ void repopulate(ArrayList<String> related, int sz)
     println(sz);
   animating = false;
   if (nodeClicked == null)
-    background(100);
+    background(255);
   else
     background(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
   pushMatrix();
@@ -261,7 +267,7 @@ void repopulate(ArrayList<String> related, int sz)
     float posx=325*sin(TWO_PI/10.0*i);
     float posy=325*cos(TWO_PI/10.0*i);
     //draw object number i
-    nodeList.get(i).drawNode(posx, posy,sz);
+    nodeList.get(i).drawNode(posx, posy, sz);
   }
   popMatrix();
 }
@@ -270,6 +276,7 @@ void keyReleased()
 {
   if (key == DELETE)
   {
+    nodeClicked = null;
     recreateNode();
     repopulate(keywords, 125);
   }
