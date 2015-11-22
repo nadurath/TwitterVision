@@ -29,7 +29,7 @@ void setup()
   woeids.add(2490383); //Seattle, works
   woeids.add(2487956); //San Francisco, works
   closed = false;
-  leap = new LeapController();
+  //leap = new LeapController();
   size(1000, 900);
   tc = new TweetCrawler();
   println(keywords);
@@ -39,18 +39,21 @@ void setup()
 
 void draw()
 {
-  for (int i = 0; i < trends.getTrends().length; i++) {
-    keywords.add(trends.getTrends()[i].getName());
-  }
-  if (leap.getDistance()<50&&!closed) {
-    println("closed");
-    closed = true;
-  } else if (leap.getDistance()>50&&closed)
+  if (trends!=null)
   {
-    println("opened");
-    closed = false;
-    click((int)map(leap.getX(), -120, 62, 0, width), (int)map(leap.getY(), 75, 250, height, 0));
+    for (int i = 0; i < trends.getTrends().length; i++) {
+      keywords.add(trends.getTrends()[i].getName());
+    }
   }
+  /*if (leap.getDistance()<50&&!closed) {
+   println("closed");
+   closed = true;
+   } else if (leap.getDistance()>50&&closed)
+   {
+   println("opened");
+   closed = false;
+   click((int)map(leap.getX(), -120, 62, 0, width), (int)map(leap.getY(), 75, 250, height, 0));
+   }*/
   if (animating)
   {
     if (frame < 30)
@@ -90,7 +93,7 @@ void draw()
     repopulate(keywords, 125);
   pushStyle();
   stroke(255, 0, 0);
-  ellipse(map(leap.getX(), -120, 62, 0, width), map(leap.getY(), 75, 250, height, 0), 5, 5); 
+  //ellipse(map(leap.getX(), -120, 62, 0, width), map(leap.getY(), 75, 250, height, 0), 5, 5); 
   popStyle();
 }
 
@@ -245,15 +248,14 @@ void recreateNode()
 { 
   trends = tc.getTrends(woeids.get((int)random(woeids.size())));
   keywords = new ArrayList<String>();
-  if (trends.getTrends().length!=0)
+  if (trends!=null)
   {
     for (int i = 0; i < trends.getTrends().length; i++) {
       keywords.add(trends.getTrends()[i].getName());
     }
-  }
-  else
-    for(int i = 0;i<10;i++)
-      keywords.add("Twitter doesn't like us:(");
+  } else
+    for (int i = 0; i<10; i++)
+      keywords.add("Error: Rate limit exceeded.");
   for (int i = 0; i<10; i++)
   {
     Node n1 = new Node();
