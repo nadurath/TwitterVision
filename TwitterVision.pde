@@ -238,7 +238,7 @@ void recreateNode()
   
   for (Node a:nodeList)
   {
-    //a.setText(keywords.remove(0));
+    a.setText(keywords.remove(0));
     //a.setR((int)(random(255)+(255*2))/3);
     //a.setG((int)(random(255)+(255*2))/3);
     //a.setB((int)(random(255)+(255*2))/3);
