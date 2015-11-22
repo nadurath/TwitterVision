@@ -24,7 +24,7 @@ import java.util.*;
 void setup()
 {
   closed = false;
-  //leap = new LeapController(); ##############################
+  leap = new LeapController();
   size(1000,900);
   tc = new TweetCrawler();
   trends = tc.getTrends();
@@ -41,7 +41,7 @@ void draw()
   for (int i = 0; i < trends.getTrends().length; i++) {
     keywords.add(trends.getTrends()[i].getName());
   }
-  /*if(leap.getDistance()<50&&!closed){ ################################
+  if(leap.getDistance()<50&&!closed){
    println("closed");
    closed = true;
    }
@@ -50,7 +50,7 @@ void draw()
    println("opened");
    closed = false;
    click((int)map(leap.getX(),-120,62,0,width),(int)map(leap.getY(),75,250,height,0));
-   }*/
+   }
   if (animating)
   {
     if (frame < 30)
@@ -90,7 +90,7 @@ void draw()
     repopulate(keywords, 125);
   pushStyle();
   stroke(255, 0, 0);
-  //ellipse(map(leap.getX(),-120,62,0,width),map(leap.getY(),75,250,height,0),5,5); ###########################
+  ellipse(map(leap.getX(),-120,62,0,width),map(leap.getY(),75,250,height,0),5,5); 
   popStyle();
 }
 
@@ -146,14 +146,14 @@ class Node
     stroke(r/2, g/2, b/2);
     strokeWeight(5);
     textSize(sz/6);
-    ellipse(xLoc, yLoc, sz, sz);
+    ellipse(xLoc, yLoc-10, sz, sz);
     textAlign(CENTER);
     textR = r/2;
     textG = g/2;
     textB = b/2;
     fill(textR, textG, textB);
     if (keyword.length() > 0)
-      text(keyword.replace("\n", " "), xLoc, yLoc);
+      text(keyword.replace("\n", " "), xLoc-70, yLoc-40,130,150);
   }
 
   float getX()
@@ -260,13 +260,18 @@ void repopulate(ArrayList<String> related, int sz)
   else
   {
     background(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
+    fill(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
+    ellipse(width/2,height/2,600,600);
     fill(0);
     String rel = nodeClicked.getText();
-    text(rel,width/2,height/2-20);
+    textAlign(LEFT);
+    text(rel,width/2,height/2-200);
     String user = (String)tweets.keySet().toArray()[0];
-    showTweet(width/2-20,height/2,user,tweets.get(user));
+    showTweet(width/2+20,height/2-140,user,tweets.get(user));
+    user = (String)tweets.keySet().toArray()[1];
+    showTweet(width/2+20,height/2,user,tweets.get(user));
     user = (String)tweets.keySet().toArray()[2];
-    showTweet(width/2-20,height/2+40,user,tweets.get(user));
+    showTweet(width/2+20,height/2+120,user,tweets.get(user));
   }
   pushMatrix();
   translate(width/2, height/2);
@@ -281,8 +286,11 @@ void repopulate(ArrayList<String> related, int sz)
 }
 void showTweet(int x, int y,String user,String body){
   pushStyle();
-  text(user,x,y);
-  text(body,x,y+30);
+  fill(255,0,0);
+  text(user,x-150,y);
+  fill(0);
+  textSize(12);
+  text(body.replace("\n"," "),x-180,y+10,300,300);
   popStyle();
 }
 void keyReleased()
