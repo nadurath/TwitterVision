@@ -247,6 +247,13 @@ void click(int x, int y) {
 void recreateNode()
 { 
   trends = tc.getTrends(woeids.get((int)random(woeids.size())));
+  if (nodeClicked!=null)
+  {
+    tweets = tc.search(nodeClicked.getText());
+    TOne = new Tweet((String)tweets.keySet().toArray()[0], tweets.get((String)tweets.keySet().toArray()[0]), loadImage(tc.getPic((String)tweets.keySet().toArray()[0])));
+    TTwo = new Tweet((String)tweets.keySet().toArray()[1], tweets.get((String)tweets.keySet().toArray()[1]), loadImage(tc.getPic((String)tweets.keySet().toArray()[1])));
+    TThree = new Tweet((String)tweets.keySet().toArray()[2], tweets.get((String)tweets.keySet().toArray()[2]), loadImage(tc.getPic((String)tweets.keySet().toArray()[2])));
+  }
   keywords = new ArrayList<String>();
   if (trends!=null)
   {
@@ -255,7 +262,7 @@ void recreateNode()
     }
   } else
     for (int i = 0; i<10; i++)
-      keywords.add("Error: Rate limit exceeded.");
+      keywords.add((int)random(i)+" ");
   for (int i = 0; i<10; i++)
   {
     Node n1 = new Node();
@@ -266,13 +273,7 @@ void recreateNode()
   {
     nodeList.get(i).setText(keywords.get(i));
   }
-  if (nodeClicked!=null)
-  {
-    tweets = tc.search(nodeClicked.getText());
-    TOne = new Tweet((String)tweets.keySet().toArray()[0], tweets.get((String)tweets.keySet().toArray()[0]), loadImage(tc.getPic((String)tweets.keySet().toArray()[0])));
-    TTwo = new Tweet((String)tweets.keySet().toArray()[1], tweets.get((String)tweets.keySet().toArray()[1]), loadImage(tc.getPic((String)tweets.keySet().toArray()[1])));
-    TThree = new Tweet((String)tweets.keySet().toArray()[2], tweets.get((String)tweets.keySet().toArray()[2]), loadImage(tc.getPic((String)tweets.keySet().toArray()[2])));
-  }
+
   rayCount = 0;
 }
 
