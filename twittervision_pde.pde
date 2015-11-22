@@ -1,6 +1,6 @@
 ArrayList<Node> nodeList = new ArrayList<Node>();
 Map<String,String> hashtags;
-String[] keywords;
+ArrayList<String> keywords = new ArrayList<String>();
 boolean animating = false;
 boolean panimation = false;
 float zoomX;
@@ -21,7 +21,11 @@ void setup()
   size(800, 800);
   TweetCrawler tc = new TweetCrawler();
   hashtags = tc.search("#yolo");
-  keywords= loadStrings("dictionary.txt");
+  Collection<String> values = hashtags.values();
+  Object[] tweetVals = values.toArray();
+  for(Object o: tweetVals)
+    keywords.add((String)o);
+  println(values);
   recreateNode();
   repopulate(keywords, 125);
   
@@ -124,7 +128,8 @@ class Node
     textG = g/2;
     textB = b/2;
     fill(textR, textG, textB);
-    text(keyword, xLoc, yLoc);
+    if(keyword.length() > 0)
+      text(keyword, xLoc, yLoc);
   }
 
   float getX()
@@ -203,14 +208,14 @@ void recreateNode()
   }
   for (Node a:nodeList)
   {
-    a.setText(keywords[(int)random(keywords.length)]);
+    a.setText(keywords.get((int)random(keywords.size())));
     //a.setR((int)(random(255)+(255*2))/3);
     //a.setG((int)(random(255)+(255*2))/3);
     //a.setB((int)(random(255)+(255*2))/3);
   }
 }
 
-void repopulate(String[] related, int sz)
+void repopulate(ArrayList<String> related, int sz)
 {
   if (springAnimation)
     println(sz);
