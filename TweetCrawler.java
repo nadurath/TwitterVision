@@ -21,13 +21,13 @@ public class TweetCrawler {
       Query query = new Query(hashtag);
       QueryResult result;
       int count = 0;
-      do {
+      //do {
         count++;
         result = twitter.search(query);
         for (Status tweet : result.getTweets()) {
           tweetMap.put("@" + tweet.getUser().getScreenName(), tweet.getText());
         }
-      } while ((query = result.nextQuery()) != null && count < 5);
+      //} while ((query = result.nextQuery()) != null && count < 1);
     } 
     catch (TwitterException te) {
       te.printStackTrace();
@@ -45,7 +45,7 @@ public class TweetCrawler {
       te.printStackTrace();
       System.out.println("Failed to find user: " + te.getMessage());
     }
-    return "";
+    return " ";
   }
   public Trends getTrends()
   {

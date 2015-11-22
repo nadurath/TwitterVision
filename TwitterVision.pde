@@ -11,6 +11,7 @@ int backG;
 int backB;
 int rayCount;
 Trends trends;
+TweetCrawler tc;
 float springAmount;
 boolean springAnimation, closed;
 Node nodeClicked;
@@ -23,11 +24,9 @@ void setup()
 {
   closed = false;
   //leap = new LeapController(); ##############################
-  size(800, 800);
-  TweetCrawler tc = new TweetCrawler();
+  size(1000,900);
+  tc = new TweetCrawler();
   hashtags = tc.search("#nice");
-  //leap = new LeapController(); ############################
-  size(800, 800);
   hashtags = tc.search("#whoosh");
   Collection<String> values = hashtags.values();
   Object[] tweetVals = values.toArray();
@@ -62,6 +61,8 @@ void draw()
       fill(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
       //println(frame);
       ellipse(nodeClicked.getX(), nodeClicked.getY(), 100*frame/30*20, 100*frame/30*20);//change 40 if it grows too fast
+      fill(0);
+
       frame++;
       if (frame > 30)
         repopulate(keywords, 325);
@@ -87,6 +88,8 @@ void draw()
       animating = false;
       //nodeList = new ArrayList<Node>();
       frame++;
+      fill(0);
+      text(nodeClicked.getText(), width/2, height/2);
     }
   } else
     repopulate(keywords, 125);
@@ -259,7 +262,13 @@ void repopulate(ArrayList<String> related, int sz)
   if (nodeClicked == null)
     background(255);
   else
+  {
     background(nodeClicked.getR(), nodeClicked.getG(), nodeClicked.getB());
+    fill(0);
+    String rel = nodeClicked.getText();
+    //hashtags = tc.search(rel);
+    text(rel,width/2,height/2);
+  }
   pushMatrix();
   translate(width/2, height/2);
   for (int i=0; i<10; i++)
